@@ -1,7 +1,6 @@
 package com.iecisa.androidseed.injection.application;
 
-import com.techyourchance.journeytodependencyinjection.Constants;
-import com.techyourchance.journeytodependencyinjection.networking.StackoverflowApi;
+import com.iecisa.androidseed.api.MarvelApi;
 
 import javax.inject.Singleton;
 
@@ -12,20 +11,20 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module
 public class NetworkingModule {
+    private static final String BASE_URL = "https://api.myjson.com";
 
     @Singleton
     @Provides
     Retrofit getRetrofit() {
         return new Retrofit.Builder()
-                .baseUrl(Constants.BASE_URL)
+                .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }
 
     @Singleton
     @Provides
-    StackoverflowApi getStackoverflowApi(Retrofit retrofit) {
-        return retrofit.create(StackoverflowApi.class);
+    MarvelApi getStackoverflowApi(Retrofit retrofit) {
+        return retrofit.create(MarvelApi.class);
     }
-
 }

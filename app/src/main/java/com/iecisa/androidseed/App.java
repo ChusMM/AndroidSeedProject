@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.iecisa.androidseed.injection.application.ApplicationComponent;
 import com.iecisa.androidseed.injection.application.ApplicationModule;
+import com.iecisa.androidseed.injection.application.DaggerApplicationComponent;
 
 /**
  * Created by Jesús Manuel Muñoz Mazuecos
@@ -17,7 +18,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        mApplicationComponent = DaggerApplicationComponent.builder()
+        mApplicationComponent =  DaggerApplicationComponent.builder()
                 .applicationModule(new ApplicationModule(this))
                 .build();
     }
