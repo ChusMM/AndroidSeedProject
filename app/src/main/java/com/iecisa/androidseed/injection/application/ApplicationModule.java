@@ -1,6 +1,7 @@
 package com.iecisa.androidseed.injection.application;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.iecisa.androidseed.api.MarvelApi;
 import com.iecisa.androidseed.domain.usecases.FetchHeroesUseCase;
@@ -16,7 +17,17 @@ public class ApplicationModule {
     }
 
     @Provides
+    Application getApplication() {
+        return mApplication;
+    }
+
+    @Provides
+    Context getAppContext(Application application) {
+        return application.getApplicationContext();
+    }
+
+    @Provides
     FetchHeroesUseCase getFetchHeroesUseCase(MarvelApi marvelApi) {
-        return new FetchHeroesUseCase(marvelApi, mApplication.getApplicationContext());
+        return new FetchHeroesUseCase(marvelApi);
     }
 }

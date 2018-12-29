@@ -13,14 +13,23 @@ import com.iecisa.androidseed.injection.application.DaggerApplicationComponent;
  */
 
 public class App extends Application {
+    private static App instance;
     private ApplicationComponent mApplicationComponent;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
         mApplicationComponent =  DaggerApplicationComponent.builder()
                 .applicationModule(new ApplicationModule(this))
                 .build();
+    }
+
+    public static App getInstance() {
+        if (instance == null) {
+            throw new RuntimeException("App not instanced");
+        }
+        return instance;
     }
 
     public ApplicationComponent getApplicationComponent() {

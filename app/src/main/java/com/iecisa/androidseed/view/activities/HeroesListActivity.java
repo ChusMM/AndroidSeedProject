@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.iecisa.androidseed.domain.SuperHero;
 import com.iecisa.androidseed.domain.usecases.FetchHeroesUseCase;
+import com.iecisa.androidseed.injection.BaseActivity;
 import com.iecisa.androidseed.mvc.viewmvc.ViewMvcFactory;
 import com.iecisa.androidseed.mvc.heroes.HeroesListViewMvc;
 import com.iecisa.androidseed.view.dialogs.DialogsManager;
@@ -15,6 +16,8 @@ import javax.inject.Inject;
 
 public class HeroesListActivity extends BaseActivity implements HeroesListViewMvc.Listener,
         FetchHeroesUseCase.Listener {
+
+    private static final String TAG = HeroesListActivity.class.getSimpleName();
 
     @Inject
     FetchHeroesUseCase mFetchHeroesUseCase;
@@ -61,7 +64,7 @@ public class HeroesListActivity extends BaseActivity implements HeroesListViewMv
 
     @Override
     public void onFetchHeroesFailed(String msg) {
-        mDialogsManager.showDialogWithId(ServerErrorDialogFragment.newInstance(msg), "");
+        mDialogsManager.showDialogWithId(ServerErrorDialogFragment.newInstance(msg), TAG);
     }
 
     @Override

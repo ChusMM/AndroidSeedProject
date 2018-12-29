@@ -5,7 +5,6 @@ import android.support.annotation.IdRes;
 import android.support.annotation.StringRes;
 import android.view.View;
 
-import com.iecisa.androidseed.injection.BaseObservable;
 import com.iecisa.androidseed.mvc.viewmvc.ObservableViewMvc;
 
 /**

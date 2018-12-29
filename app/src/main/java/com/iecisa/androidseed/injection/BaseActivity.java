@@ -1,14 +1,16 @@
-package com.iecisa.androidseed.view.fragments;
+package com.iecisa.androidseed.injection;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.UiThread;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 
 import com.iecisa.androidseed.App;
 import com.iecisa.androidseed.injection.application.ApplicationComponent;
 import com.iecisa.androidseed.injection.presentation.PresentationComponent;
 import com.iecisa.androidseed.injection.presentation.PresentationModule;
 
-public abstract class BaseFragment extends Fragment {
+@SuppressLint("Registered")
+public class BaseActivity extends AppCompatActivity {
 
     private boolean mIsInjectorUsed;
 
@@ -19,11 +21,11 @@ public abstract class BaseFragment extends Fragment {
         }
         mIsInjectorUsed = true;
         return getApplicationComponent()
-                .newPresentationComponent(new PresentationModule(getActivity()));
+                .newPresentationComponent(new PresentationModule(this));
 
     }
 
     private ApplicationComponent getApplicationComponent() {
-        return ((App) getActivity().getApplication()).getApplicationComponent();
+        return ((App) getApplication()).getApplicationComponent();
     }
 }

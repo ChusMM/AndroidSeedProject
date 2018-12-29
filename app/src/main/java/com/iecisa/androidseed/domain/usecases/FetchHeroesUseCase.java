@@ -9,32 +9,37 @@ import com.iecisa.androidseed.api.HeroListWrapper;
 import com.iecisa.androidseed.api.MarvelApi;
 import com.iecisa.androidseed.domain.Factory;
 import com.iecisa.androidseed.domain.SuperHero;
-import com.iecisa.androidseed.injection.BaseObservable;
+import com.iecisa.androidseed.injection.BaseUseCase;
 
-import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class FetchHeroesUseCase extends BaseObservable<FetchHeroesUseCase.Listener> {
+public class FetchHeroesUseCase extends BaseUseCase<FetchHeroesUseCase.Listener> {
 
     public interface Listener {
         void onFetchHeroesOk(List<SuperHero> superHeroes);
         void onFetchHeroesFailed(String msg);
     }
 
-    private final MarvelApi mMarvelApi;
-    private final WeakReference<Context> contextRef;
+    private MarvelApi mMarvelApi;
 
     @Nullable
-    Call<HeroListWrapper> mCall;
+    private Call<HeroListWrapper> mCall;
 
-    public FetchHeroesUseCase(MarvelApi marvelApi, Context context) {
+    @Inject Context context;
+
+    public FetchHeroesUseCase(MarvelApi marvelApi) {
         this.mMarvelApi = marvelApi;
-        this.contextRef = new WeakReference<>(context);
+
+        getUseCaseComponent().inject(this);
+
+        super.setContextRef(context);
     }
 
     public void fetchAndNotify() {
@@ -80,8 +85,8 @@ public class FetchHeroesUseCase extends BaseObservable<FetchHeroesUseCase.Listen
 
     private void notifyFailed() {
         final String reason;
-        if (contextRef.get() == null) {
-            reason = contextRef.get().getString(R.string.call_failed);
+        if (getContextRef() != null) {
+            reason = getContextRef().getString(R.string.call_failed);
         } else {
             reason = "Connection Failed";
         }

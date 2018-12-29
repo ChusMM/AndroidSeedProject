@@ -24,7 +24,7 @@ public class NetworkingModule {
 
     @Singleton
     @Provides
-    MarvelApi getStackoverflowApi(Retrofit retrofit) {
+    MarvelApi getMarvelApi(Retrofit retrofit) {
         return retrofit.create(MarvelApi.class);
     }
 }

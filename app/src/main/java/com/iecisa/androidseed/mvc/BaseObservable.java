@@ -1,4 +1,4 @@
-package com.iecisa.androidseed.injection;
+package com.iecisa.androidseed.mvc;
 
 import java.util.Collections;
 import java.util.Set;
@@ -29,5 +29,4 @@ public abstract class BaseObservable<L> {
     protected final Set<L> getListeners() {
         return Collections.unmodifiableSet(mListeners);
     }
-
 }
