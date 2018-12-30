@@ -2,6 +2,7 @@ package com.iecisa.androidseed.injection;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.iecisa.androidseed.App;
@@ -12,11 +13,16 @@ import com.iecisa.androidseed.mvc.BaseObservable;
 
 import java.lang.ref.WeakReference;
 
-public class BaseUseCase<L> extends BaseObservable<L> {
+import retrofit2.Call;
+
+public class BaseUseCase<L, C> extends BaseObservable<L> {
     private static final String TAG = BaseUseCase.class.getSimpleName();
 
     private boolean mIsInjectorUsed;
     private WeakReference<Context> contextRef;
+
+    @Nullable
+    protected Call<C> mCall;
 
     public void setContextRef(@NonNull Context context) {
         this.contextRef = new WeakReference<>(context);
@@ -31,7 +37,7 @@ public class BaseUseCase<L> extends BaseObservable<L> {
         }
     }
 
-    public UseCaseComponent getUseCaseComponent() {
+    protected UseCaseComponent getUseCaseComponent() {
         if (mIsInjectorUsed) {
             throw new RuntimeException("there is no need to use injector more than once");
         }
@@ -39,7 +45,13 @@ public class BaseUseCase<L> extends BaseObservable<L> {
         return getApplicationComponent().newUseCaseComponent(new UseCaseModule());
     }
 
-    private ApplicationComponent getApplicationComponent() {
+    protected ApplicationComponent getApplicationComponent() {
         return App.getInstance().getApplicationComponent();
+    }
+
+    protected void cancelCurrentFetchIfActive() {
+        if (mCall != null && !mCall.isCanceled() && !mCall.isExecuted()) {
+            mCall.cancel();
+        }
     }
 }

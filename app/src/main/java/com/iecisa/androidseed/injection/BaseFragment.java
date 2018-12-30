@@ -24,6 +24,10 @@ public abstract class BaseFragment extends Fragment {
     }
 
     private ApplicationComponent getApplicationComponent() {
+        if (getActivity() == null) {
+            throw new RuntimeException("Fragment linked activity not instantiated");
+        }
+
         return ((App) getActivity().getApplication()).getApplicationComponent();
     }
 }

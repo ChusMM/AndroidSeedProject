@@ -8,14 +8,12 @@ import com.iecisa.androidseed.mvc.heroes.HeroesListViewMvc;
 import com.iecisa.androidseed.mvc.heroes.HeroesListViewMvcImpl;
 import com.iecisa.androidseed.util.ImageLoader;
 
-import javax.inject.Inject;
-
 public class ViewMvcFactory {
 
     private final LayoutInflater mLayoutInflater;
     private ImageLoader mImageLoader;
 
-    @Inject
+    //@Inject
     public ViewMvcFactory(LayoutInflater layoutInflater, ImageLoader imageLoader) {
         mLayoutInflater = layoutInflater;
         mImageLoader = imageLoader;

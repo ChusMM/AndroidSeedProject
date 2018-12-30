@@ -24,6 +24,10 @@ public abstract class BaseDialog extends DialogFragment {
     }
 
     private ApplicationComponent getApplicationComponent() {
+        if (getActivity() == null) {
+            throw new RuntimeException("DialogFragment linked activity not instantiated");
+        }
+
         return ((App) getActivity().getApplication()).getApplicationComponent();
     }
 }

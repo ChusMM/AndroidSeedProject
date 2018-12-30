@@ -2,7 +2,6 @@ package com.iecisa.androidseed.domain.usecases;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.iecisa.androidseed.R;
 import com.iecisa.androidseed.api.HeroListWrapper;
@@ -20,7 +19,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class FetchHeroesUseCase extends BaseUseCase<FetchHeroesUseCase.Listener> {
+public class FetchHeroesUseCase extends BaseUseCase<FetchHeroesUseCase.Listener, HeroListWrapper> {
 
     public interface Listener {
         void onFetchHeroesOk(List<SuperHero> superHeroes);
@@ -28,9 +27,6 @@ public class FetchHeroesUseCase extends BaseUseCase<FetchHeroesUseCase.Listener>
     }
 
     private MarvelApi mMarvelApi;
-
-    @Nullable
-    private Call<HeroListWrapper> mCall;
 
     @Inject Context context;
 
@@ -70,28 +66,22 @@ public class FetchHeroesUseCase extends BaseUseCase<FetchHeroesUseCase.Listener>
         });
     }
 
-    private void cancelCurrentFetchIfActive() {
-        if (mCall != null && !mCall.isCanceled() && !mCall.isExecuted()) {
-            mCall.cancel();
-        }
-    }
-
-    private void notifySucceeded(List<SuperHero> superHeroes) {
+    protected void notifySucceeded(List<SuperHero> superHeroes) {
         List<SuperHero> unmodifiableQuestions = Collections.unmodifiableList(superHeroes);
-        for (Listener listener : getListeners()) {
+        for (FetchHeroesUseCase.Listener listener : getListeners()) {
             listener.onFetchHeroesOk(unmodifiableQuestions);
         }
     }
 
-    private void notifyFailed() {
+    protected void notifyFailed() {
         final String reason;
         if (getContextRef() != null) {
             reason = getContextRef().getString(R.string.call_failed);
         } else {
             reason = "Connection Failed";
         }
-        
-        for (Listener listener : getListeners()) {
+
+        for (FetchHeroesUseCase.Listener listener : getListeners()) {
             listener.onFetchHeroesFailed(reason);
         }
     }

@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 
+import com.iecisa.androidseed.mvc.viewmvc.ViewMvcFactory;
 import com.iecisa.androidseed.util.ImageLoader;
 import com.iecisa.androidseed.view.dialogs.DialogsManager;
 
@@ -49,5 +50,10 @@ public class PresentationModule {
     @Provides
     ImageLoader getImageLoader(Activity activity) {
         return new ImageLoader(activity);
+    }
+
+    @Provides
+    ViewMvcFactory getViewMvcFactory(LayoutInflater layoutInflater, ImageLoader imageLoader) {
+        return new ViewMvcFactory(layoutInflater, imageLoader);
     }
 }
