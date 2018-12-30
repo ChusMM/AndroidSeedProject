@@ -1,5 +1,7 @@
 package com.iecisa.androidseed.mvc.heroes;
 
+import android.support.v4.widget.SwipeRefreshLayout;
+
 import com.iecisa.androidseed.domain.SuperHero;
 import com.iecisa.androidseed.mvc.viewmvc.ObservableViewMvc;
 
@@ -11,6 +13,8 @@ public interface HeroesListViewMvc extends ObservableViewMvc<HeroesListViewMvc.L
         void onHeroClicked(SuperHero superHero);
     }
 
-    void onRefresh();
+    void unbind();
+    void onViewRefresh();
+    void bindSwipeRefresh(SwipeRefreshLayout.OnRefreshListener listener);
     void bindHeroes(List<SuperHero> superHeroes, Listener listener);
 }

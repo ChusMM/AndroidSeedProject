@@ -3,4 +3,5 @@
     <string name="call_failed">We got somme issues when attempting connect. Please, try it later.</string>
     <string name="server_error_dialog_title">Error</string>
     <string name="ok">Ok</string>
+    <string name="share_image_via">Share image via...</string>
 </resources>

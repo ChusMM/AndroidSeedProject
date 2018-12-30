@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.iecisa.androidseed.R;
 import com.iecisa.androidseed.domain.SuperHero;
 import com.iecisa.androidseed.mvc.heroes.HeroesListViewMvc;
+import com.iecisa.androidseed.util.ImageLoader;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,17 +22,19 @@ public class HeroHolder extends RecyclerView.ViewHolder {
     TextView heroName;
 
     private final HeroesListViewMvc.Listener listener;
+    private final ImageLoader imageLoader;
 
-    public HeroHolder(View itemView,HeroesListViewMvc.Listener listener) {
+    public HeroHolder(View itemView, HeroesListViewMvc.Listener listener, ImageLoader imageLoader) {
         super(itemView);
         ButterKnife.bind(this, itemView);
 
         this.listener = listener;
+        this.imageLoader = imageLoader;
     }
 
     public void bindHero(final SuperHero hero) {
 
-        //ImageWrapper.loadFromUrlBy4_3Ratio(hero.getPhoto(), heroPic, R.drawable.placeholder);
+        imageLoader.loadFromUrlBy43AspectRatio(hero.getPhoto(), heroPic, R.drawable.placeholder);
 
         heroName.setText(hero.getName());
 

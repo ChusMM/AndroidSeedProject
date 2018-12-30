@@ -7,6 +7,8 @@ import android.view.View;
 
 import com.iecisa.androidseed.mvc.viewmvc.ObservableViewMvc;
 
+import butterknife.Unbinder;
+
 /**
  * This is the base class which provides basic common functionality to MVC views implementations
  */
@@ -14,6 +16,7 @@ public abstract class BaseViewMvc<ListenerType> extends BaseObservable<ListenerT
         implements ObservableViewMvc<ListenerType> {
 
     private View mRootView;
+    private Unbinder mUnbinder;
 
     // ---------------------------------------------------------------------------------------------
     // region root View
@@ -28,6 +31,14 @@ public abstract class BaseViewMvc<ListenerType> extends BaseObservable<ListenerT
      */
     protected void setRootView(View rootView) {
         mRootView = rootView;
+    }
+
+    public Unbinder getUnbinder() {
+        return mUnbinder;
+    }
+
+    public void setUnbinder(Unbinder unbinder) {
+        this.mUnbinder = unbinder;
     }
 
     // endregion root View

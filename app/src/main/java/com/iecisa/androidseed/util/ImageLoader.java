@@ -1,105 +1,99 @@
 package com.iecisa.androidseed.util;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.support.annotation.DrawableRes;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
+import com.iecisa.androidseed.R;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 public class ImageLoader {
+    private static final String TAG = ImageLoader.class.getSimpleName();
 
     private final Activity mActivity;
 
-    private final RequestOptions mDefaultRequestOptions;
-
     public ImageLoader(Activity activity) {
         mActivity = activity;
-
-        mDefaultRequestOptions = new RequestOptions()
-                .centerCrop();
     }
 
-    public void loadImage(String uri, ImageView target) {
-        Glide.with(mActivity)
-                .net
+    public void loadFromUrl(final String uri, final ImageView target) {
+        this.getOfflineInstance(uri)
+                .into(target, new Callback() {
+                    @Override
+                    public void onSuccess() { }
+
+                    @Override
+                    public void onError() {
+                        //Try again online if cache failed
+                        ImageLoader.this.getStandardInstance(uri).into(target);
+                    }
+                });
+    }
+
+    private RequestCreator getStandardInstance(String uri) {
+        return this.getStandardInstance(uri, R.drawable.placeholder);
+    }
+
+    private RequestCreator getStandardInstance(final String uri, @DrawableRes final int placeHolder) {
+        return Picasso.with(mActivity)
                 .load(uri)
-                .apply(mDefaultRequestOptions)
-                .into(target);
-    }
-}
-
-/*    public static void loadFromUrl(final String url, final ImageView imageView) {
-        try {
-            Picasso.with(imageView.getContext()).load(url)
-                    .fit()
-                    .placeholder(R.drawable.placeholder)
-                    .error(R.drawable.placeholder)
-                    .networkPolicy(NetworkPolicy.OFFLINE)
-                    .into(imageView, new Callback() {
-                        @Override
-                        public void onSuccess() { }
-
-                        @Override
-                        public void onError() {
-                            //Try again online if cache failed
-                            try {
-                                Picasso.with(imageView.getContext()).load(url)
-                                        .fit()
-                                        .placeholder(R.drawable.placeholder)
-                                        .error(R.drawable.placeholder)
-                                        .into(imageView);
-                            } catch (Exception e) {
-                                Log.e(TAG, e.toString());
-                            }
-                        }
-                    });
-        } catch (Exception e) {
-            Log.e(TAG, e.toString());
-        }
+                .placeholder(placeHolder)
+                .error(placeHolder);
     }
 
-    public static void loadFromUrlBy4_3Ratio(final String url, final ImageView imageView,
-                                             final int placeHolder) {
-        try {
-            ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
-
-            final int widthPx = imageView.getMeasuredWidth() != 0 ?
-                    imageView.getMeasuredWidth() : 500;
-            final int resizedHeight =  (3 * widthPx) / 4;
-
-            layoutParams.height = resizedHeight;
-            imageView.setLayoutParams(layoutParams);
-
-            imageView.setVisibility(View.VISIBLE);
-
-            Picasso.with(imageView.getContext()).load(url)
-                    .placeholder(placeHolder)
-                    .error(placeHolder)
-                    .networkPolicy(NetworkPolicy.OFFLINE)
-                    .resize(widthPx, resizedHeight)
-                    .into(imageView, new Callback() {
-                        @Override
-                        public void onSuccess() { }
-
-                        @Override
-                        public void onError() {
-                            try {
-                                Picasso.with(imageView.getContext()).load(url)
-                                        .placeholder(placeHolder)
-                                        .error(placeHolder)
-                                        .resize(widthPx, resizedHeight)
-                                        .into(imageView);
-                            } catch (Exception e) {
-                                Log.e(TAG, e.toString());
-                            }
-                        }
-                    });
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
-        }
+    private RequestCreator getOfflineInstance(String uri) {
+        return this.getStandardInstance(uri).networkPolicy(NetworkPolicy.OFFLINE);
     }
 
-    public static void setImageCircularBitmap(ImageView imageView, Bitmap bitmap) {
+    private RequestCreator getOfflineInstance(String uri, @DrawableRes int placeHolder) {
+        return this.getStandardInstance(uri, placeHolder).networkPolicy(NetworkPolicy.OFFLINE);
+    }
+
+    public void loadFromUrlBy43AspectRatio(final String uri,
+                                           final ImageView target,
+                                           final int placeHolder) {
+
+        ViewGroup.LayoutParams layoutParams = target.getLayoutParams();
+
+        final int widthPx = target.getMeasuredWidth() != 0 ?
+                target.getMeasuredWidth() : 500;
+        final int resizedHeight = (3 * widthPx) / 4;
+
+        layoutParams.height = resizedHeight;
+        target.setLayoutParams(layoutParams);
+
+        target.setVisibility(View.VISIBLE);
+
+        this.getOfflineInstance(uri, placeHolder)
+                .resize(widthPx, resizedHeight)
+                .into(target, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                    }
+
+                    @Override
+                    public void onError() {
+                        ImageLoader.this.getStandardInstance(uri, placeHolder)
+                                .resize(widthPx, resizedHeight)
+                                .into(target);
+
+                    }
+                });
+    }
+
+    public void setImageCircularBitmap(ImageView imageView, Bitmap bitmap) {
         try {
             Bitmap circularBitMap = getCroppedBitmap(bitmap);
             imageView.setImageBitmap(circularBitMap);
@@ -108,7 +102,7 @@ public class ImageLoader {
         }
     }
 
-    public static Bitmap getCroppedBitmap(Bitmap bitmap) {
+    public Bitmap getCroppedBitmap(Bitmap bitmap) {
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
                 bitmap.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
@@ -120,13 +114,15 @@ public class ImageLoader {
         paint.setAntiAlias(true);
         canvas.drawARGB(0, 0, 0, 0);
         paint.setColor(color);
+
         // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
         canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
                 bitmap.getWidth() / 2, paint);
+
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, rect, rect, paint);
         //Bitmap _bmp = Bitmap.createScaledBitmap(output, 60, 60, false);
         //return _bmp;
         return output;
     }
-*/
+}

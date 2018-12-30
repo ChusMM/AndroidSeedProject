@@ -1,6 +1,7 @@
 package com.iecisa.androidseed.view.activities;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 
 import com.iecisa.androidseed.domain.SuperHero;
 import com.iecisa.androidseed.domain.usecases.FetchHeroesUseCase;
@@ -15,7 +16,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class HeroesListActivity extends BaseActivity implements HeroesListViewMvc.Listener,
-        FetchHeroesUseCase.Listener {
+        FetchHeroesUseCase.Listener, SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = HeroesListActivity.class.getSimpleName();
 
@@ -43,10 +44,10 @@ public class HeroesListActivity extends BaseActivity implements HeroesListViewMv
     protected void onStart() {
         super.onStart();
         mViewMvc.registerListener(this);
+        mViewMvc.bindSwipeRefresh(this);
         mFetchHeroesUseCase.registerListener(this);
 
-        mViewMvc.onRefresh();
-        mFetchHeroesUseCase.fetchAndNotify();
+        this.onRefresh();
     }
 
     @Override
@@ -54,7 +55,20 @@ public class HeroesListActivity extends BaseActivity implements HeroesListViewMv
         super.onStop();
 
         mViewMvc.unregisterListener(this);
+        mViewMvc.bindSwipeRefresh(null);
         mFetchHeroesUseCase.unregisterListener(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mViewMvc.unbind();
+    }
+
+    @Override
+    public void onRefresh() {
+        mViewMvc.onViewRefresh();
+        mFetchHeroesUseCase.fetchAndNotify();
     }
 
     @Override

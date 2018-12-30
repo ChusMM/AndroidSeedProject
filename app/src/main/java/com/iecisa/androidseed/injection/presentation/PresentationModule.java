@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 
 import com.iecisa.androidseed.mvc.viewmvc.ViewMvcFactory;
 import com.iecisa.androidseed.util.ImageLoader;
+import com.iecisa.androidseed.util.ImageUtils;
 import com.iecisa.androidseed.view.dialogs.DialogsManager;
 
 import dagger.Module;
@@ -53,7 +54,12 @@ public class PresentationModule {
     }
 
     @Provides
-    ViewMvcFactory getViewMvcFactory(LayoutInflater layoutInflater, ImageLoader imageLoader) {
-        return new ViewMvcFactory(layoutInflater, imageLoader);
+    ImageUtils getImageUtils(Activity activity) {
+        return new ImageUtils(activity);
+    }
+
+    @Provides
+    ViewMvcFactory getViewMvcFactory(LayoutInflater layoutInflater, ImageLoader imageLoader, ImageUtils imageUtils) {
+        return new ViewMvcFactory(layoutInflater, imageLoader, imageUtils);
     }
 }
