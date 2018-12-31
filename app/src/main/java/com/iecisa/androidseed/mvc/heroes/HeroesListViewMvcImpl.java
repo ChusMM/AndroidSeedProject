@@ -1,5 +1,6 @@
 package com.iecisa.androidseed.mvc.heroes;
 
+import android.app.Activity;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +12,6 @@ import com.iecisa.androidseed.R;
 import com.iecisa.androidseed.domain.SuperHero;
 import com.iecisa.androidseed.mvc.BaseViewMvc;
 import com.iecisa.androidseed.util.ImageLoader;
-import com.iecisa.androidseed.util.ImageUtils;
 import com.iecisa.androidseed.view.adapters.HeroesAdapter;
 
 import java.util.List;
@@ -29,30 +29,18 @@ public class HeroesListViewMvcImpl extends BaseViewMvc<HeroesListViewMvc.Listene
     @BindView(R.id.recycler_heroes)
     RecyclerView recyclerHeroes;
 
-    private final ImageLoader imageLoader;
-    private final ImageUtils imageUtils;
+    private final ImageLoader mImageLoader;
 
-    public HeroesListViewMvcImpl(LayoutInflater inflater, ViewGroup container,
-                                 ImageLoader imageLoader, ImageUtils imageUtils) {
+    public HeroesListViewMvcImpl(LayoutInflater inflater, ViewGroup container, ImageLoader imageLoader) {
         setRootView(inflater.inflate(R.layout.activity_hero_list, container, false));
+        super.bindView(this);
 
-        this.imageLoader = imageLoader;
-        this.imageUtils = imageUtils;
-
-        Unbinder unbinder = ButterKnife.bind(this, getRootView());
-        setUnbinder(unbinder);
+        mImageLoader = imageLoader;
 
         swipeRefreshLayout.setColorSchemeResources(
                 R.color.colorPrimary,
                 R.color.colorPrimaryDark,
                 R.color.colorAccent);
-    }
-
-    @Override
-    public void unbind() {
-        if (getUnbinder() != null) {
-            getUnbinder().unbind();
-        }
     }
 
     @Override
@@ -67,12 +55,12 @@ public class HeroesListViewMvcImpl extends BaseViewMvc<HeroesListViewMvc.Listene
     }
 
     @Override
-    public void bindHeroes(List<SuperHero> superHeroes, HeroesListViewMvc.Listener listener) {
+    public void bindHeroes(List<SuperHero> superHeroes,
+                           HeroesListViewMvc.Listener listener) {
         recyclerHeroes.setVisibility(View.VISIBLE);
         swipeRefreshLayout.setRefreshing(false);
 
-
-        HeroesAdapter heroesAdapter = new HeroesAdapter(superHeroes, listener, imageLoader, getContext());
+        HeroesAdapter heroesAdapter = new HeroesAdapter(superHeroes, listener, getContext(), mImageLoader);
         recyclerHeroes.setHasFixedSize(true);
         recyclerHeroes.setAdapter(heroesAdapter);
         recyclerHeroes.setLayoutManager(new GridLayoutManager(getContext(), 2));

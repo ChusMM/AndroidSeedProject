@@ -15,31 +15,35 @@ import com.iecisa.androidseed.util.ImageLoader;
 
 import java.util.List;
 
-public class HeroesAdapter extends RecyclerView.Adapter<HeroHolder> {
+public class HeroesAdapter extends RecyclerView.Adapter<HeroViewHolder> {
     private static final String TAG = HeroesAdapter.class.getSimpleName();
 
     private List<SuperHero> heroes;
-    private Context context;
-    private HeroesListViewMvc.Listener listener;
-    private final ImageLoader imageLoader;
 
-    public HeroesAdapter(List<SuperHero> heroes, HeroesListViewMvc.Listener listener,
-                         ImageLoader imageLoader, Context context) {
+    private final ImageLoader imageLoader;
+    private final Context context;
+    private final HeroesListViewMvc.Listener listener;
+
+    public HeroesAdapter(List<SuperHero> heroes,
+                         HeroesListViewMvc.Listener listener,
+                         Context context,
+                         ImageLoader imageLoader) {
         this.heroes = heroes;
-        this.context = context;
         this.listener = listener;
+        this.context = context;
         this.imageLoader = imageLoader;
     }
 
     @NonNull
     @Override
-    public HeroHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public HeroViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.row_hero, parent, false);
-        return new HeroHolder(view, listener, imageLoader);
+
+        return new HeroViewHolder(view, imageLoader, listener);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull HeroHolder holder, int position) {
+    public void onBindViewHolder(@NonNull HeroViewHolder holder, int position) {
         try {
             holder.bindHero(heroes.get(position));
         } catch (NullPointerException | IndexOutOfBoundsException e) {

@@ -13,7 +13,6 @@ public interface HeroesListViewMvc extends ObservableViewMvc<HeroesListViewMvc.L
         void onHeroClicked(SuperHero superHero);
     }
 
-    void unbind();
     void onViewRefresh();
     void bindSwipeRefresh(SwipeRefreshLayout.OnRefreshListener listener);
     void bindHeroes(List<SuperHero> superHeroes, Listener listener);

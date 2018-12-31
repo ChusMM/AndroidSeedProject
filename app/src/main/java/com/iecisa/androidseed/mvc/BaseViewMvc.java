@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.iecisa.androidseed.mvc.viewmvc.ObservableViewMvc;
 
+import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 /**
@@ -24,6 +25,19 @@ public abstract class BaseViewMvc<ListenerType> extends BaseObservable<ListenerT
     @Override
     public View getRootView() {
         return mRootView;
+    }
+
+    @Override
+    public void bindView(Object target) {
+        Unbinder unbinder = ButterKnife.bind(target, getRootView());
+        setUnbinder(unbinder);
+    }
+
+    @Override
+    public void unbindView() {
+        if (getUnbinder() != null) {
+            getUnbinder().unbind();
+        }
     }
 
     /**

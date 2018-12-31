@@ -62,7 +62,7 @@ public class HeroesListActivity extends BaseActivity implements HeroesListViewMv
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mViewMvc.unbind();
+        mViewMvc.unbindView();
     }
 
     @Override

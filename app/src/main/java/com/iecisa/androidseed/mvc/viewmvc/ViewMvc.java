@@ -19,4 +19,14 @@ public interface ViewMvc {
      * @return root Android View of this MVC View
      */
     View getRootView();
+
+    /**
+     * Binds current view via ButterKnife
+     */
+    void bindView(Object target);
+
+    /**
+     * Unbinds current view via ButterKnife
+     */
+    void unbindView();
 }

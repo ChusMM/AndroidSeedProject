@@ -12,11 +12,13 @@ import com.iecisa.androidseed.util.ImageUtils;
 public class ViewMvcFactory {
 
     private final LayoutInflater mLayoutInflater;
-    private ImageLoader mImageLoader;
-    private ImageUtils mImageUtils;
+    private final ImageLoader mImageLoader;
+    private final ImageUtils mImageUtils;
 
     //@Inject
-    public ViewMvcFactory(LayoutInflater layoutInflater, ImageLoader imageLoader, ImageUtils imageUtils) {
+    public ViewMvcFactory(LayoutInflater layoutInflater,
+                          ImageLoader imageLoader,
+                          ImageUtils imageUtils) {
         mLayoutInflater = layoutInflater;
         mImageLoader = imageLoader;
         mImageUtils = imageUtils;
@@ -35,7 +37,7 @@ public class ViewMvcFactory {
         ViewMvc viewMvc;
 
         if (mvcViewClass == HeroesListViewMvc.class) {
-            viewMvc = new HeroesListViewMvcImpl(mLayoutInflater, container, mImageLoader, mImageUtils);
+            viewMvc = new HeroesListViewMvcImpl(mLayoutInflater, container, mImageLoader);
         } else {
             throw new IllegalArgumentException("unsupported MVC view class " + mvcViewClass);
         }

@@ -59,7 +59,8 @@ public class PresentationModule {
     }
 
     @Provides
-    ViewMvcFactory getViewMvcFactory(LayoutInflater layoutInflater, ImageLoader imageLoader, ImageUtils imageUtils) {
+    ViewMvcFactory getViewMvcFactory(LayoutInflater layoutInflater,
+                                     ImageLoader imageLoader, ImageUtils imageUtils) {
         return new ViewMvcFactory(layoutInflater, imageLoader, imageUtils);
     }
 }
