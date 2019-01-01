@@ -1,4 +1,4 @@
-package com.iecisa.androidseed.view.dialogs;
+package com.iecisa.androidseed.injection;
 
 import android.support.annotation.UiThread;
 import android.support.v4.app.DialogFragment;

@@ -1,6 +1,4 @@
 package com.iecisa.androidseed.mvc.heroes;
-
-import android.app.Activity;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,8 +15,6 @@ import com.iecisa.androidseed.view.adapters.HeroesAdapter;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 public class HeroesListViewMvcImpl extends BaseViewMvc<HeroesListViewMvc.Listener>
         implements HeroesListViewMvc {
