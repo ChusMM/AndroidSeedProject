@@ -1,5 +1,6 @@
 package com.iecisa.androidseed.view.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 
@@ -83,6 +84,8 @@ public class HeroesListActivity extends BaseActivity implements HeroesListViewMv
 
     @Override
     public void onHeroClicked(SuperHero superHero) {
-
+        final Intent intent = new Intent(this, HeroDetailActivity.class);
+        intent.putExtra(HeroDetailActivity.HERO_EXTRA, superHero);
+        this.startActivity(intent);
     }
 }

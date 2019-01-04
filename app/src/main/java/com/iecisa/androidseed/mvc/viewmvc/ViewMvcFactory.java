@@ -4,6 +4,8 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import com.iecisa.androidseed.mvc.heroes.HeroDetailViewMvc;
+import com.iecisa.androidseed.mvc.heroes.HeroDetailViewMvcImpl;
 import com.iecisa.androidseed.mvc.heroes.HeroesListViewMvc;
 import com.iecisa.androidseed.mvc.heroes.HeroesListViewMvcImpl;
 import com.iecisa.androidseed.util.ImageLoader;
@@ -38,6 +40,8 @@ public class ViewMvcFactory {
 
         if (mvcViewClass == HeroesListViewMvc.class) {
             viewMvc = new HeroesListViewMvcImpl(mLayoutInflater, container, mImageLoader);
+        } else if (mvcViewClass == HeroDetailViewMvc.class) {
+            viewMvc = new HeroDetailViewMvcImpl(mLayoutInflater, container, mImageLoader, mImageUtils);
         } else {
             throw new IllegalArgumentException("unsupported MVC view class " + mvcViewClass);
         }
