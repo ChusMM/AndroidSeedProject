@@ -37,6 +37,9 @@ public class BaseUseCase<L, C> extends BaseObservable<L> {
         }
     }
 
+    protected void getDataStrategy() {
+    }
+
     protected UseCaseComponent getUseCaseComponent() {
         if (mIsInjectorUsed) {
             throw new RuntimeException("there is no need to use injector more than once");

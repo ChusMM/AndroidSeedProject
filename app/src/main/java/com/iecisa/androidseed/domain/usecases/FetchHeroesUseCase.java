@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import com.iecisa.androidseed.R;
 import com.iecisa.androidseed.api.HeroListWrapper;
 import com.iecisa.androidseed.api.MarvelApi;
-import com.iecisa.androidseed.domain.Factory;
+import com.iecisa.androidseed.datastrategy.DataFactory;
 import com.iecisa.androidseed.domain.SuperHero;
 import com.iecisa.androidseed.injection.BaseUseCase;
 
@@ -52,7 +52,7 @@ public class FetchHeroesUseCase extends BaseUseCase<FetchHeroesUseCase.Listener,
             public void onResponse(@NonNull Call<HeroListWrapper> call,
                                    @NonNull Response<HeroListWrapper> response) {
                 if (response.isSuccessful()) {
-                    notifySucceeded(Factory.superHeroesFromHeroListWrapper(response.body()));
+                    notifySucceeded(DataFactory.superHeroesFromHeroListWrapper(response.body()));
                 } else {
                     notifyFailed();
                 }
