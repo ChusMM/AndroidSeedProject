@@ -13,7 +13,8 @@ public class Factory {
 
         if (heroListWrapper != null && heroListWrapper.superheroes != null)  {
             for (HeroWrapper heroWrapper : heroListWrapper.superheroes) {
-                SuperHero superHero = new SuperHero(heroWrapper.name, heroWrapper.photo);
+                SuperHero superHero = new SuperHero(heroWrapper.name, heroWrapper.photo, heroWrapper.realName,
+                        heroWrapper.height, heroWrapper.power, heroWrapper.abilities, heroWrapper.groups);
                 superHeroes.add(superHero);
             }
         }

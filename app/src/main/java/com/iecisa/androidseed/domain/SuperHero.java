@@ -12,12 +12,18 @@ public class SuperHero implements Parcelable {
     private String realName;
     private String height;
     private String power;
-    private String Abilities;
+    private String abilities;
     private String groups;
 
-    public SuperHero(String name, String photo) {
+    public SuperHero(String name, String photo, String realName, String height, String power,
+                     String abilities, String groups) {
         this.name = name;
         this.photo = photo;
+        this.realName = realName;
+        this.height = height;
+        this.power = power;
+        this.abilities = abilities;
+        this.groups = groups;
     }
 
     public String getName() {
@@ -61,11 +67,11 @@ public class SuperHero implements Parcelable {
     }
 
     public String getAbilities() {
-        return Abilities;
+        return abilities;
     }
 
     public void setAbilities(String abilities) {
-        Abilities = abilities;
+        this.abilities = abilities;
     }
 
     public String getGroups() {
@@ -107,11 +113,21 @@ public class SuperHero implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.name);
         dest.writeString(this.photo);
+        dest.writeString(this.realName);
+        dest.writeString(this.height);
+        dest.writeString(this.power);
+        dest.writeString(this.abilities);
+        dest.writeString(this.groups);
     }
 
     protected SuperHero(Parcel in) {
         this.name = in.readString();
         this.photo = in.readString();
+        this.realName = in.readString();
+        this.height = in.readString();
+        this.power = in.readString();
+        this.abilities = in.readString();
+        this.groups = in.readString();
     }
 
     public static final Parcelable.Creator<SuperHero> CREATOR = new Parcelable.Creator<SuperHero>() {
