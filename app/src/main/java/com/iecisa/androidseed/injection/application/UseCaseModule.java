@@ -1,6 +1,10 @@
 package com.iecisa.androidseed.injection.application;
 
+import com.iecisa.androidseed.BuildConfig;
 import com.iecisa.androidseed.api.MarvelApi;
+import com.iecisa.androidseed.datastrategy.DataFactory;
+import com.iecisa.androidseed.datastrategy.DataSource;
+import com.iecisa.androidseed.datastrategy.DataStrategy;
 
 import java.util.concurrent.TimeUnit;
 
@@ -13,8 +17,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module
-public class NetworkingModule {
-    private static final String BASE_URL = "https://api.myjson.com";
+public class UseCaseModule {
+    private static final String BASE_URL = BuildConfig.API_BASE_URL;
 
     private static final int CONNECT_TIMEOUT = 10;
     private static final int READ_TIMEOUT = 10;
@@ -38,5 +42,24 @@ public class NetworkingModule {
         Retrofit retrofit = retrofitBuilder.client(client).build();
 
         return retrofit.create(MarvelApi.class);
+    }
+
+    @Singleton
+    @Provides
+    DataFactory getDataFactory() {
+        return new DataFactory();
+    }
+
+    @Singleton
+    @Provides
+    DataSource getDataSource() {
+        return DataSource.getDefaulDataSource();
+    }
+
+    @Provides
+    DataStrategy getDataStrategy(DataSource dataSource,
+                                 MarvelApi marvelApi,
+                                 DataFactory dataFactory) {
+        return DataStrategy.newInstance(dataSource, marvelApi, dataFactory);
     }
 }

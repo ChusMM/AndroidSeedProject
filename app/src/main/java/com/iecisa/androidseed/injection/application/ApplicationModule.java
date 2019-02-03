@@ -3,7 +3,7 @@ package com.iecisa.androidseed.injection.application;
 import android.app.Application;
 import android.content.Context;
 
-import com.iecisa.androidseed.api.MarvelApi;
+import com.iecisa.androidseed.datastrategy.DataStrategy;
 import com.iecisa.androidseed.domain.usecases.FetchHeroesUseCase;
 import dagger.Module;
 import dagger.Provides;
@@ -27,7 +27,8 @@ public class ApplicationModule {
     }
 
     @Provides
-    FetchHeroesUseCase getFetchHeroesUseCase(MarvelApi marvelApi) {
-        return new FetchHeroesUseCase(marvelApi);
+    FetchHeroesUseCase getFetchHeroesUseCase(DataStrategy dataStrategy,
+                                             Context context) {
+        return new FetchHeroesUseCase(dataStrategy, context);
     }
 }

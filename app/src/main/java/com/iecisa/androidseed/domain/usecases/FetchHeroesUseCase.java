@@ -1,69 +1,50 @@
 package com.iecisa.androidseed.domain.usecases;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import com.iecisa.androidseed.R;
-import com.iecisa.androidseed.api.HeroListWrapper;
-import com.iecisa.androidseed.api.MarvelApi;
-import com.iecisa.androidseed.datastrategy.DataFactory;
+import com.iecisa.androidseed.datastrategy.DataStrategy;
 import com.iecisa.androidseed.domain.SuperHero;
 import com.iecisa.androidseed.injection.BaseUseCase;
 
 import java.util.Collections;
 import java.util.List;
 
-import javax.inject.Inject;
+/**
+ * Created by Jesús Manuel Muñoz Mazuecos
+ * on 31/01/2019.
+ * email: jmanuel_munoz@iecisa.com
+ */
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class FetchHeroesUseCase extends BaseUseCase<FetchHeroesUseCase.Listener, HeroListWrapper> {
+public class FetchHeroesUseCase extends BaseUseCase<FetchHeroesUseCase.Listener>
+        implements DataStrategy.HeroesListener {
 
     public interface Listener {
         void onFetchHeroesOk(List<SuperHero> superHeroes);
         void onFetchHeroesFailed(String msg);
     }
 
-    private MarvelApi mMarvelApi;
+    private DataStrategy dataStrategy;
 
-    @Inject Context context;
+    public FetchHeroesUseCase(DataStrategy dataStrategy,
+                              Context context) {
 
-    public FetchHeroesUseCase(MarvelApi marvelApi) {
-        this.mMarvelApi = marvelApi;
-
-        getUseCaseComponent().inject(this);
-
+        this.dataStrategy = dataStrategy;
         super.setContextRef(context);
     }
 
     public void fetchAndNotify() {
-        this.cancelCurrentFetchIfActive();
+        dataStrategy.queryHeroes(this);
+    }
 
-        mCall = mMarvelApi.getHeroes();
-        if (mCall == null) {
-            notifyFailed();
-            return;
-        }
+    @Override
+    public void onQueryHeroesOk(List<SuperHero> superHeroes) {
+        this.notifySucceeded(superHeroes);
+    }
 
-        mCall.enqueue(new Callback<HeroListWrapper>() {
-            @Override
-            public void onResponse(@NonNull Call<HeroListWrapper> call,
-                                   @NonNull Response<HeroListWrapper> response) {
-                if (response.isSuccessful()) {
-                    notifySucceeded(DataFactory.superHeroesFromHeroListWrapper(response.body()));
-                } else {
-                    notifyFailed();
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<HeroListWrapper> call,
-                                  @NonNull Throwable t) {
-                notifyFailed();
-            }
-        });
+    @Override
+    public void onQueryHeroesFailed() {
+        this.notifyFailed();
     }
 
     protected void notifySucceeded(List<SuperHero> superHeroes) {

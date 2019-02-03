@@ -28,4 +28,7 @@ public class BaseActivity extends AppCompatActivity {
     private ApplicationComponent getApplicationComponent() {
         return ((App) getApplication()).getApplicationComponent();
     }
+
+
+
 }

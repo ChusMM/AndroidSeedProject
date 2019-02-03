@@ -9,12 +9,12 @@ import java.util.List;
 
 public class DataFactory {
 
-    public static List<SuperHero> superHeroesFromHeroListWrapper(HeroListWrapper heroListWrapper) {
+    public List<SuperHero> superHeroesFromHeroListWrapper(HeroListWrapper heroListWrapper) {
         List<SuperHero> superHeroes = new ArrayList<>();
 
         if (heroListWrapper != null && heroListWrapper.superheroes != null)  {
             for (HeroWrapper heroWrapper : heroListWrapper.superheroes) {
-                SuperHero superHero = DataFactory.superHeroFromHeroWrapper(heroWrapper);
+                SuperHero superHero = this.superHeroFromHeroWrapper(heroWrapper);
                 superHeroes.add(superHero);
             }
         }
@@ -22,7 +22,7 @@ public class DataFactory {
         return superHeroes;
     }
 
-    public static SuperHero superHeroFromHeroWrapper(HeroWrapper heroWrapper) {
+    public SuperHero superHeroFromHeroWrapper(HeroWrapper heroWrapper) {
         return new SuperHero(heroWrapper.name, heroWrapper.photo, heroWrapper.realName,
                 heroWrapper.height, heroWrapper.power, heroWrapper.abilities, heroWrapper.groups);
 

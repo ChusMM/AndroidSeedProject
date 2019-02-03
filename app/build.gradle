@@ -21,8 +21,21 @@ android {
             }
         }
     }
+
     buildTypes {
+        debug {
+            buildConfigField "String", "API_BASE_URL", "\"https://api.myjson.com\""
+            buildConfigField "String", "DATA_ORIGIN", "\"WS\""
+
+            jniDebuggable true
+            debuggable true
+
+        }
+
         release {
+            buildConfigField "String", "API_BASE_URL", "\"https://api.myjson.com\""
+            buildConfigField "String", "DATA_ORIGIN", "\"WS\""
+
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
