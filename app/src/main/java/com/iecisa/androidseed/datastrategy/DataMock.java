@@ -3,8 +3,8 @@ package com.iecisa.androidseed.datastrategy;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.annotation.WorkerThread;
+import androidx.annotation.NonNull;
+import androidx.annotation.WorkerThread;
 import android.util.Log;
 
 import com.iecisa.androidseed.api.HeroListWrapper;

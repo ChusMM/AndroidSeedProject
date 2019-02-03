@@ -1,8 +1,8 @@
 package com.iecisa.androidseed.injection;
 
 import android.annotation.SuppressLint;
-import android.support.annotation.UiThread;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.UiThread;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.iecisa.androidseed.App;
 import com.iecisa.androidseed.injection.application.ApplicationComponent;

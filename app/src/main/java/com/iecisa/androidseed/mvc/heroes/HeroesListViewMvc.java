@@ -1,6 +1,6 @@
 package com.iecisa.androidseed.mvc.heroes;
 
-import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.iecisa.androidseed.domain.SuperHero;
 import com.iecisa.androidseed.mvc.viewmvc.ObservableViewMvc;

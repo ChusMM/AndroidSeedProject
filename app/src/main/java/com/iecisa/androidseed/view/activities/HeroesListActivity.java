@@ -2,7 +2,7 @@ package com.iecisa.androidseed.view.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.iecisa.androidseed.domain.SuperHero;
 import com.iecisa.androidseed.domain.usecases.FetchHeroesUseCase;

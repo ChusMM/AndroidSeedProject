@@ -1,6 +1,6 @@
 package com.iecisa.androidseed.mvc.viewmvc;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 

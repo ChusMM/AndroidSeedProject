@@ -1,7 +1,7 @@
 package com.iecisa.androidseed.injection;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.iecisa.androidseed.mvc.BaseObservable;

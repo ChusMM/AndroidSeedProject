@@ -1,7 +1,7 @@
 package com.iecisa.androidseed.injection;
 
-import android.support.annotation.UiThread;
-import android.support.v4.app.Fragment;
+import androidx.annotation.UiThread;
+import androidx.fragment.app.Fragment;
 
 import com.iecisa.androidseed.App;
 import com.iecisa.androidseed.injection.application.ApplicationComponent;

@@ -1,7 +1,7 @@
 package com.iecisa.androidseed.datastrategy;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.iecisa.androidseed.api.HeroListWrapper;
 import com.iecisa.androidseed.api.MarvelApi;

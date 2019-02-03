@@ -1,7 +1,7 @@
 package com.iecisa.androidseed
 
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.iecisa.androidseed.view.activities.HeroesListActivity
 import kotlinx.android.synthetic.main.activity_splash.sample_text

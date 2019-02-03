@@ -1,8 +1,8 @@
 package com.iecisa.androidseed.mvc;
 
 import android.content.Context;
-import android.support.annotation.IdRes;
-import android.support.annotation.StringRes;
+import androidx.annotation.IdRes;
+import androidx.annotation.StringRes;
 import android.view.View;
 
 import com.iecisa.androidseed.mvc.viewmvc.ObservableViewMvc;

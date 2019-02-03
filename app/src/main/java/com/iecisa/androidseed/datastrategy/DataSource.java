@@ -1,6 +1,6 @@
 package com.iecisa.androidseed.datastrategy;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.iecisa.androidseed.BuildConfig;
 
