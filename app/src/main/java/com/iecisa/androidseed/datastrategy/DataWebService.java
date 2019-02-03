@@ -1,10 +1,12 @@
 package com.iecisa.androidseed.datastrategy;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.iecisa.androidseed.api.HeroListWrapper;
 import com.iecisa.androidseed.api.MarvelApi;
 import com.iecisa.androidseed.domain.SuperHero;
+import com.iecisa.androidseed.persistence.AppDatabase;
 
 import java.util.List;
 
@@ -19,16 +21,18 @@ import retrofit2.Response;
  */
 public class DataWebService extends DataStrategy {
     private Call<HeroListWrapper> mCall;
+    private DataStrategy cacheManager;
 
-    public DataWebService(MarvelApi marvelApi, DataFactory dataFactory) {
-        super(marvelApi, dataFactory);
+    public DataWebService(MarvelApi marvelApi, AppDatabase appDatabase, DataFactory dataFactory, Context context) {
+        super(marvelApi, dataFactory, context);
+        this.cacheManager = super.getCacheManager(appDatabase);
     }
 
     @Override
     public void queryHeroes(@NonNull final HeroesListener listener) {
         this.cancelCurrentFetchIfActive();
 
-        mCall = mMarvelApi.getHeroes();
+        mCall = marvelApi.getHeroes();
         if (mCall == null) {
             listener.onQueryHeroesFailed();
             return;
@@ -40,6 +44,7 @@ public class DataWebService extends DataStrategy {
                                    @NonNull Response<HeroListWrapper> response) {
                 if (response.isSuccessful()) {
                     List<SuperHero> result = dataFactory.superHeroesFromHeroListWrapper(response.body());
+                    saveHeroes(result);
                     listener.onQueryHeroesOk(result);
                 } else {
                     listener.onQueryHeroesFailed();
@@ -52,6 +57,17 @@ public class DataWebService extends DataStrategy {
                 listener.onQueryHeroesFailed();
             }
         });
+    }
+
+    @Override
+    protected void deleteAllHeroes() {
+        this.cacheManager.deleteAllHeroes();
+    }
+
+    @Override
+    protected void saveHeroes(List<SuperHero> superHeroes) {
+        this.deleteAllHeroes();
+        this.cacheManager.saveHeroes(superHeroes);
     }
 
     private void cancelCurrentFetchIfActive() {

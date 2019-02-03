@@ -1,9 +1,11 @@
 package com.iecisa.androidseed.datastrategy;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.iecisa.androidseed.api.MarvelApi;
 import com.iecisa.androidseed.domain.SuperHero;
+import com.iecisa.androidseed.persistence.AppDatabase;
 
 import java.util.List;
 
@@ -14,12 +16,25 @@ import java.util.List;
  */
 
 public abstract class DataStrategy {
-    protected MarvelApi mMarvelApi;
+    protected MarvelApi marvelApi;
+    protected AppDatabase appDatabase;
     protected DataFactory dataFactory;
+    protected Context context;
 
-    public DataStrategy(MarvelApi marvelApi, DataFactory dataFactory) {
-        this.mMarvelApi = marvelApi;
+    public DataStrategy(MarvelApi marvelApi, DataFactory dataFactory, Context context) {
+        this.marvelApi = marvelApi;
         this.dataFactory = dataFactory;
+        this.context = context;
+    }
+
+    public DataStrategy(AppDatabase appDatabase, Context context) {
+        this.appDatabase = appDatabase;
+        this.context = context;
+    }
+
+    public DataStrategy(DataFactory dataFactory, Context context) {
+        this.dataFactory = dataFactory;
+        this.context = context;
     }
 
     public interface HeroesListener {
@@ -28,16 +43,27 @@ public abstract class DataStrategy {
     }
 
     public abstract void queryHeroes(@NonNull HeroesListener listener);
+    protected abstract void deleteAllHeroes();
+    protected abstract void saveHeroes(List<SuperHero> superHeroes);
+
+    protected DataStrategy getCacheManager(AppDatabase appDatabase) {
+        return new DataLocal(appDatabase, context);
+    }
 
     public static DataStrategy newInstance(DataSource dataSource,
                                            MarvelApi marvelApi,
-                                           DataFactory dataFactory) {
+                                           AppDatabase appDatabase,
+                                           DataFactory dataFactory,
+                                           Context context) {
         switch (dataSource) {
             case DATA_WS:
+                return new DataWebService(marvelApi, appDatabase, dataFactory, context);
             case DATA_DB:
+                return new DataLocal(appDatabase, context);
             case DATA_MOCK:
+                return new DataMock(dataFactory, context);
             default:
-                return new DataWebService(marvelApi, dataFactory);
+                return new DataWebService(marvelApi, appDatabase, dataFactory, context);
         }
     }
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.iecisa.androidseed.datastrategy.DataStrategy;
 import com.iecisa.androidseed.domain.usecases.FetchHeroesUseCase;
+
 import dagger.Module;
 import dagger.Provides;
 

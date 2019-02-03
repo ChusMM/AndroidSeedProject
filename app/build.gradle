@@ -24,22 +24,62 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField "String", "API_BASE_URL", "\"https://api.myjson.com\""
-            buildConfigField "String", "DATA_ORIGIN", "\"WS\""
-
             jniDebuggable true
             debuggable true
-
         }
 
         release {
-            buildConfigField "String", "API_BASE_URL", "\"https://api.myjson.com\""
-            buildConfigField "String", "DATA_ORIGIN", "\"WS\""
-
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    flavorDimensions "mode", "environment"
+    productFlavors {
+        webservice {
+            dimension "mode"
+            buildConfigField "String", "DATA_SOURCE", "\"WS\""
+        }
+
+        database {
+            dimension "mode"
+            buildConfigField "String", "DATA_SOURCE", "\"DB\""
+        }
+
+        mock {
+            dimension "mode"
+            buildConfigField "String", "DATA_SOURCE", "\"MOCK\""
+        }
+
+        pre {
+            dimension "environment"
+            applicationIdSuffix ".preproduction"
+            buildConfigField "String", "API_BASE_URL", "\"https://api.myjson.com\""
+        }
+
+        pro {
+            dimension "environment"
+            buildConfigField "String", "API_BASE_URL", "\"https://api.myjson.com\""
+        }
+    }
+
+    configurations {
+        webservicePreDebug
+        webservicePreRelease
+        webserviceProDebug
+        webserviceProRelease
+
+        databasePreDebug
+        databasePreRelease
+        databaseProDebug
+        databaseProRelease
+
+        mockPreDebug
+        mockPreRelease
+        mockProDebug
+        mockProRelease
+    }
+
     externalNativeBuild {
         cmake {
             path "CMakeLists.txt"
@@ -58,6 +98,11 @@ dependencies {
     implementation 'com.android.support:design:28.0.0'
     implementation 'com.android.support:cardview-v7:28.0.0'
     implementation 'com.android.support:support-v4:28.0.0'
+
+    // Room
+    def room_version = "2.1.0-alpha04"
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version" // use kapt for Kotlin
 
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
@@ -81,6 +126,9 @@ dependencies {
     // Dagger
     implementation 'com.google.dagger:dagger:2.16'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.14.1'
+
+    // Apache commons IO
+    implementation group: 'commons-io', name: 'commons-io', version: '2.6'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

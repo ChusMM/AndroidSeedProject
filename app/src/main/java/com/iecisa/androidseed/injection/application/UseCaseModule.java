@@ -1,15 +1,19 @@
 package com.iecisa.androidseed.injection.application;
 
+import android.content.Context;
+
 import com.iecisa.androidseed.BuildConfig;
 import com.iecisa.androidseed.api.MarvelApi;
 import com.iecisa.androidseed.datastrategy.DataFactory;
 import com.iecisa.androidseed.datastrategy.DataSource;
 import com.iecisa.androidseed.datastrategy.DataStrategy;
+import com.iecisa.androidseed.persistence.AppDatabase;
 
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
+import androidx.room.Room;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
@@ -56,10 +60,17 @@ public class UseCaseModule {
         return DataSource.getDefaulDataSource();
     }
 
+    @Singleton
+    @Provides
+    AppDatabase getAppDataBase(Context context) {
+        return Room.databaseBuilder(context, AppDatabase.class, "heroes_database").build();
+    }
+
     @Provides
     DataStrategy getDataStrategy(DataSource dataSource,
                                  MarvelApi marvelApi,
+                                 AppDatabase appDatabase,
                                  DataFactory dataFactory) {
-        return DataStrategy.newInstance(dataSource, marvelApi, dataFactory);
+        return DataStrategy.newInstance(dataSource, marvelApi, appDatabase, dataFactory);
     }
 }

@@ -26,7 +26,7 @@ public enum DataSource {
     }
 
     public static DataSource getDefaulDataSource() {
-        return buildFromString(BuildConfig.DATA_ORIGIN);
+        return buildFromString(BuildConfig.DATA_SOURCE);
     }
 
     public static DataSource buildFromString(String source) {

@@ -1,21 +1,35 @@
 package com.iecisa.androidseed.api;
 
+import android.support.annotation.NonNull;
+import android.util.Log;
+
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HeroListWrapper {
+    private static final String TAG = HeroListWrapper.class.getSimpleName();
+
     @SerializedName("superheroes")
     public List<HeroWrapper> superheroes;
 
-    public HeroListWrapper() { }
+    public HeroListWrapper() {
+        this.superheroes = new ArrayList<>();
+    }
 
-    public HeroListWrapper(List<HeroWrapper> superheroes) {
+    public HeroListWrapper(@NonNull List<HeroWrapper> superheroes) {
         this.superheroes = superheroes;
     }
 
     public static HeroListWrapper fromJson(String json) {
-        return new Gson().fromJson(json, HeroListWrapper.class);
+        try {
+            return new Gson().fromJson(json, HeroListWrapper.class);
+        } catch (JsonSyntaxException e) {
+            Log.e(TAG, e.toString());
+            return new HeroListWrapper();
+        }
     }
 }

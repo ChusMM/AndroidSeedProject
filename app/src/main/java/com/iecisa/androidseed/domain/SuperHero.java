@@ -6,13 +6,34 @@ import android.os.Parcelable;
 
 import java.util.Objects;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "super_heroes")
 public class SuperHero implements Parcelable {
+    @PrimaryKey
+    public int uid;
+
+    @ColumnInfo(name = "name")
     private String name;
+
+    @ColumnInfo(name = "photo")
     private String photo;
+
+    @ColumnInfo(name = "real_name")
     private String realName;
+
+    @ColumnInfo(name = "height")
     private String height;
+
+    @ColumnInfo(name = "power")
     private String power;
+
+    @ColumnInfo(name = "abilities")
     private String abilities;
+
+    @ColumnInfo(name = "groups")
     private String groups;
 
     public SuperHero(String name, String photo, String realName, String height, String power,

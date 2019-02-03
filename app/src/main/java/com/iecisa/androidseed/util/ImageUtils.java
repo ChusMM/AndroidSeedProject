@@ -38,9 +38,9 @@ public class ImageUtils {
     @UiThread
     public void writeImageInLocalStorage(final Bitmap bitmap,
                                          final String imageName,
-                                         final WriteFileHandler.Listener listener) {
+                                         final FileHandler.WriteListener writeListener) {
 
-        final WriteFileHandler handler = new WriteFileHandler(listener);
+        final FileHandler handler = new FileHandler(writeListener);
 
         final File directory = new File(context.getCacheDir() + "/SeedImages");
         if (!directory.exists()) {
@@ -68,9 +68,9 @@ public class ImageUtils {
 
     private Message buildFailedMsg(Throwable throwable) {
         final Message msg = new Message();
-        msg.what = WriteFileHandler.WRITE_FAILED;
+        msg.what = FileHandler.WRITE_FAILED;
         Bundle bundle = new Bundle();
-        bundle.putSerializable(WriteFileHandler.THROWABLE_KEY, throwable);
+        bundle.putSerializable(FileHandler.THROWABLE_KEY, throwable);
         msg.setData(bundle);
 
         return msg;
@@ -78,9 +78,9 @@ public class ImageUtils {
 
     private Message buildSuccessMsg(final String imagePath) {
         final Message msg = new Message();
-        msg.what = WriteFileHandler.WRITE_FAILED;
+        msg.what = FileHandler.WRITE_OK;
         Bundle bundle = new Bundle();
-        bundle.putString(WriteFileHandler.FILE_PATH_KEY, imagePath);
+        bundle.putString(FileHandler.FILE_PATH_KEY, imagePath);
         msg.setData(bundle);
 
         return msg;
@@ -104,7 +104,7 @@ public class ImageUtils {
 
     @SuppressLint("WrongThread")
     @WorkerThread
-    private String writeInto(final File directory, final String imageName,
+    private String writeInto(final File directory, final String fileName,
                            final Bitmap bitmap) throws IOException, NullPointerException {
 
         if (Thread.currentThread() == Looper.getMainLooper().getThread()) {
@@ -114,11 +114,11 @@ public class ImageUtils {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
 
-        File imageFile = new File(directory, imageName);
-        boolean isCreated = imageFile.createNewFile();
+        File file = new File(directory, fileName);
+        boolean isCreated = file.createNewFile();
 
         if (isCreated) {
-            FileOutputStream fileOutputStream = new FileOutputStream(imageFile);
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
 
             fileOutputStream.write(byteArrayOutputStream.toByteArray());
             fileOutputStream.close();
@@ -126,7 +126,7 @@ public class ImageUtils {
             throw new IOException("Could not create image file");
         }
 
-        return imageFile.getAbsolutePath();
+        return file.getAbsolutePath();
     }
 }
 
