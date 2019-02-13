@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import com.iecisa.androidseed.api.HeroListWrapper;
 import com.iecisa.androidseed.api.MarvelApi;
 import com.iecisa.androidseed.domain.SuperHero;
-import com.iecisa.androidseed.persistence.AppDatabase;
 
 import java.util.List;
 
@@ -21,11 +20,9 @@ import retrofit2.Response;
  */
 public class DataWebService extends DataStrategy {
     private Call<HeroListWrapper> mCall;
-    private DataStrategy cacheManager;
 
-    public DataWebService(MarvelApi marvelApi, AppDatabase appDatabase, DataFactory dataFactory, Context context) {
-        super(marvelApi, dataFactory, context);
-        this.cacheManager = super.getCacheManager(appDatabase);
+    public DataWebService(MarvelApi marvelApi, CacheManager cacheManager, DataFactory dataFactory, Context context) {
+        super(marvelApi, cacheManager, dataFactory, context);
     }
 
     @Override
@@ -47,27 +44,16 @@ public class DataWebService extends DataStrategy {
                     saveHeroes(result);
                     listener.onQueryHeroesOk(result);
                 } else {
-                    listener.onQueryHeroesFailed();
+                    cacheManager.listHeroes(listener);
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<HeroListWrapper> call,
                                   @NonNull Throwable t) {
-                listener.onQueryHeroesFailed();
+                cacheManager.listHeroes(listener);
             }
         });
-    }
-
-    @Override
-    protected void deleteAllHeroes() {
-        this.cacheManager.deleteAllHeroes();
-    }
-
-    @Override
-    protected void saveHeroes(List<SuperHero> superHeroes) {
-        this.deleteAllHeroes();
-        this.cacheManager.saveHeroes(superHeroes);
     }
 
     private void cancelCurrentFetchIfActive() {

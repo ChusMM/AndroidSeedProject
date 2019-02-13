@@ -6,11 +6,9 @@ import com.iecisa.androidseed.BuildConfig;
 
 public enum DataSource {
     DATA_WS("ws"),
-    DATA_DB("db"),
     DATA_MOCK("mock");
 
     public static final String WS_DATA_ORIGIN = "WS";
-    public static final String DB_DATA_ORIGIN = "DB";
     public static final String MOCK_DATA_ORIGIN = "MOCK";
 
     private final String dataSource;
@@ -33,8 +31,6 @@ public enum DataSource {
         switch (source) {
             case WS_DATA_ORIGIN:
                 return DATA_WS;
-            case DB_DATA_ORIGIN:
-                return DATA_DB;
             case MOCK_DATA_ORIGIN:
                 return DATA_MOCK;
             default:

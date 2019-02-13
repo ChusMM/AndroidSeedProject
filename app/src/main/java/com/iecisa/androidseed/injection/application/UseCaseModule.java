@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.iecisa.androidseed.BuildConfig;
 import com.iecisa.androidseed.api.MarvelApi;
+import com.iecisa.androidseed.datastrategy.CacheManager;
 import com.iecisa.androidseed.datastrategy.DataFactory;
 import com.iecisa.androidseed.datastrategy.DataSource;
 import com.iecisa.androidseed.datastrategy.DataStrategy;
@@ -67,10 +68,16 @@ public class UseCaseModule {
     }
 
     @Provides
+    CacheManager getCacheManager(AppDatabase appDatabase, Context context) {
+        return new CacheManager(appDatabase, context);
+    }
+
+    @Provides
     DataStrategy getDataStrategy(DataSource dataSource,
                                  MarvelApi marvelApi,
-                                 AppDatabase appDatabase,
-                                 DataFactory dataFactory) {
-        return DataStrategy.newInstance(dataSource, marvelApi, appDatabase, dataFactory);
+                                 CacheManager caheManager,
+                                 DataFactory dataFactory,
+                                 Context context) {
+        return DataStrategy.newInstance(dataSource, marvelApi, caheManager, dataFactory, context);
     }
 }

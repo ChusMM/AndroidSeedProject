@@ -110,7 +110,7 @@ public class DataMock extends DataStrategy implements FileHandler.ReadListener {
     }
 
     @Override
-    public void readFinih(String content) {
+    public void readFinish(String content) {
         List<SuperHero> superHeroes = dataFactory.superHeroesFromHeroListWrapper(
                 HeroListWrapper.fromJson(content));
         listener.onQueryHeroesOk(superHeroes);

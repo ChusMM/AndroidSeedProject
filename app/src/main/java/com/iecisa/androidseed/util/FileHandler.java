@@ -15,7 +15,7 @@ public class FileHandler extends Handler {
     }
 
     public interface ReadListener {
-        void readFinih(String content);
+        void readFinish(String content);
         void readFailed(Throwable t);
     }
 
@@ -58,7 +58,7 @@ public class FileHandler extends Handler {
                 break;
             case READ_OK:
                 final String content = msg.getData().getString(FILE_CONTENT_KEY);
-                readListener.readFinih(content);
+                readListener.readFinish(content);
                 break;
             case READ_FAILED:
                 t = (Throwable) msg.getData().getSerializable(THROWABLE_KEY);
