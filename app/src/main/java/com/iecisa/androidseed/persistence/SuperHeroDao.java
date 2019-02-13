@@ -22,5 +22,5 @@ public interface SuperHeroDao {
     void insertAll(List<SuperHero> superHeroes);
 
     @Delete
-    void delete();
+    void delete(SuperHero superHero);
 }
