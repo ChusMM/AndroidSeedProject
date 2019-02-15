@@ -26,16 +26,36 @@ android {
         debug {
             jniDebuggable true
             debuggable true
-            buildConfigField "String", "DATA_SOURCE", "\"WS\""
-            buildConfigField "String", "API_BASE_URL", "\"https://api.myjson.com\""
         }
 
         release {
-            buildConfigField "String", "DATA_SOURCE", "\"WS\""
-            buildConfigField "String", "API_BASE_URL", "\"https://api.myjson.com\""
-
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    flavorDimensions "environment", "source"
+    productFlavors {
+        pre {
+            dimension "environment"
+            manifestPlaceholders = [usesCleartextTraffic: "true"]
+            buildConfigField "String", "API_BASE_URL", "\"https://api.myjson.com\""
+        }
+
+        pro {
+            dimension "environment"
+            manifestPlaceholders = [usesCleartextTraffic: "false"]
+            buildConfigField "String", "API_BASE_URL", "\"https://api.myjson.com\""
+        }
+
+        dataWS {
+            dimension = "source"
+            buildConfigField "String", "DATA_SOURCE", "\"WS\""
+        }
+
+        dataMock {
+            dimension = "source"
+            buildConfigField "String", "DATA_SOURCE", "\"MOCK\""
         }
     }
 
