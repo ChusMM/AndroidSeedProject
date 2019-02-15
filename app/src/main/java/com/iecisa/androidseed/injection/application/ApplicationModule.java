@@ -6,6 +6,8 @@ import android.content.Context;
 import com.iecisa.androidseed.datastrategy.DataStrategy;
 import com.iecisa.androidseed.domain.usecases.FetchHeroesUseCase;
 
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -17,6 +19,7 @@ public class ApplicationModule {
         mApplication = application;
     }
 
+    @Singleton
     @Provides
     Application getApplication() {
         return mApplication;

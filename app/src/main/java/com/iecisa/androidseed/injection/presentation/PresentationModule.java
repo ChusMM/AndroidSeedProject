@@ -49,8 +49,8 @@ public class PresentationModule {
     }
 
     @Provides
-    ImageLoader getImageLoader(Activity activity) {
-        return new ImageLoader(activity);
+    ImageLoader getImageLoader() {
+        return new ImageLoader();
     }
 
     @Provides

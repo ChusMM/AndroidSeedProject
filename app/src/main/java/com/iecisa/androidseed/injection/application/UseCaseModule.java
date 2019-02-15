@@ -1,14 +1,18 @@
 package com.iecisa.androidseed.injection.application;
 
+import android.app.Application;
 import android.content.Context;
 
 import com.iecisa.androidseed.BuildConfig;
 import com.iecisa.androidseed.api.MarvelApi;
 import com.iecisa.androidseed.datastrategy.CacheManager;
 import com.iecisa.androidseed.datastrategy.DataFactory;
+import com.iecisa.androidseed.datastrategy.DataMock;
 import com.iecisa.androidseed.datastrategy.DataSource;
 import com.iecisa.androidseed.datastrategy.DataStrategy;
+import com.iecisa.androidseed.datastrategy.DataWebService;
 import com.iecisa.androidseed.persistence.AppDatabase;
+import com.iecisa.androidseed.persistence.SuperHeroDao;
 
 import java.util.concurrent.TimeUnit;
 
@@ -63,21 +67,34 @@ public class UseCaseModule {
 
     @Singleton
     @Provides
-    AppDatabase getAppDataBase(Context context) {
-        return Room.databaseBuilder(context, AppDatabase.class, "heroes_database").build();
+    AppDatabase getAppDataBase(Application application) {
+        return Room.databaseBuilder(application, AppDatabase.class, "heroes_database").build();
+    }
+
+    @Singleton
+    @Provides
+    SuperHeroDao getSuperHeroDao(AppDatabase appDatabase) {
+        return appDatabase.heroDao();
     }
 
     @Provides
-    CacheManager getCacheManager(AppDatabase appDatabase, Context context) {
-        return new CacheManager(appDatabase, context);
+    CacheManager getCacheManager(SuperHeroDao superHeroDao, Context context) {
+        return new CacheManager(superHeroDao, context);
     }
 
     @Provides
     DataStrategy getDataStrategy(DataSource dataSource,
                                  MarvelApi marvelApi,
-                                 CacheManager caheManager,
+                                 CacheManager cacheManager,
                                  DataFactory dataFactory,
                                  Context context) {
-        return DataStrategy.newInstance(dataSource, marvelApi, caheManager, dataFactory, context);
+        switch (dataSource) {
+            case DATA_WS:
+                return new DataWebService(marvelApi, cacheManager, dataFactory, context);
+            case DATA_MOCK:
+                return new DataMock(dataFactory, context);
+            default:
+                return new DataWebService(marvelApi, cacheManager, dataFactory, context);
+        }
     }
 }

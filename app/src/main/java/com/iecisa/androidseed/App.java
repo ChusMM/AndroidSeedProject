@@ -5,6 +5,7 @@ import android.app.Application;
 import com.iecisa.androidseed.injection.application.ApplicationComponent;
 import com.iecisa.androidseed.injection.application.ApplicationModule;
 import com.iecisa.androidseed.injection.application.DaggerApplicationComponent;
+import com.iecisa.androidseed.injection.application.UseCaseModule;
 
 /**
  * Created by Jesús Manuel Muñoz Mazuecos
@@ -22,6 +23,7 @@ public class App extends Application {
         instance = this;
         mApplicationComponent =  DaggerApplicationComponent.builder()
                 .applicationModule(new ApplicationModule(this))
+                .useCaseModule(new UseCaseModule())
                 .build();
     }
 

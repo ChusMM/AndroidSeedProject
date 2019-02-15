@@ -1,38 +1,65 @@
 package com.iecisa.androidseed.datastrategy;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.WorkerThread;
 
 import com.iecisa.androidseed.domain.SuperHero;
-import com.iecisa.androidseed.persistence.AppDatabase;
+import com.iecisa.androidseed.persistence.SuperHeroDao;
 
 import java.util.List;
-
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 public class CacheManager {
-    private AppDatabase appDatabase;
-    private Context context;
+    private final SuperHeroDao superHeroDao;
+    private final Context context;
+    private final ExecutorService executorService;
+    private final Handler uiHandler;
 
-    public CacheManager(AppDatabase appDatabase, Context context) {
-        this.appDatabase = appDatabase;
+    public interface CacheListener {
+        void onOperationFinish();
+    }
+
+    public CacheManager(SuperHeroDao superHeroDao, Context context) {
+        this.superHeroDao = superHeroDao;
         this.context = context;
+        this.executorService = Executors.newSingleThreadExecutor();
+        this.uiHandler = new Handler(Looper.getMainLooper());
     }
 
     public void listHeroes(@NonNull DataStrategy.HeroesListener listener) {
-        List<SuperHero> superHeroes = appDatabase.heroDao().getAll();
-        listener.onQueryHeroesOk(superHeroes);
+        executorService.execute(() -> {
+            List<SuperHero> superHeroes = superHeroDao.getAll();
+            onHeroesListFinished(listener, superHeroes);
+        });
     }
 
-    public List<SuperHero> listHeroes() {
-        return appDatabase.heroDao().getAll();
+    @WorkerThread
+    private List<SuperHero> listHeroes() {
+        return superHeroDao.getAll();
     }
 
-    public void deleteAllHeroes() {
-        for (SuperHero superHero : listHeroes()) {
-            appDatabase.heroDao().delete(superHero);
-        }
+    public void deleteAllHeroes(CacheListener listener) {
+        executorService.execute(() -> {
+            for (SuperHero superHero : listHeroes()) {
+                superHeroDao.delete(superHero);
+                uiHandler.post(listener::onOperationFinish);
+            }
+        });
     }
 
-    public void saveHeroes(List<SuperHero> superHeroes) {
-        appDatabase.heroDao().insertAll(superHeroes);
+    public void replaceHeroes(List<SuperHero> superHeroes, CacheListener listener) {
+        executorService.execute(() -> {
+            superHeroDao.insertAll(superHeroes);
+            uiHandler.post(listener::onOperationFinish);
+        });
+    }
+
+    private void onHeroesListFinished(DataStrategy.HeroesListener listener,
+                                      List<SuperHero> superHeroes) {
+        this.uiHandler.post(() -> listener.onQueryHeroesOk(superHeroes));
     }
 }

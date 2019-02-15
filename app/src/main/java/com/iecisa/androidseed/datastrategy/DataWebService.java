@@ -18,7 +18,7 @@ import retrofit2.Response;
  * on 31/01/2019.
  * email: jmanuel_munoz@iecisa.com
  */
-public class DataWebService extends DataStrategy {
+public class DataWebService extends DataStrategy implements CacheManager.CacheListener {
     private Call<HeroListWrapper> mCall;
 
     public DataWebService(MarvelApi marvelApi, CacheManager cacheManager, DataFactory dataFactory, Context context) {
@@ -41,7 +41,7 @@ public class DataWebService extends DataStrategy {
                                    @NonNull Response<HeroListWrapper> response) {
                 if (response.isSuccessful()) {
                     List<SuperHero> result = dataFactory.superHeroesFromHeroListWrapper(response.body());
-                    saveHeroes(result);
+                    saveHeroes(result, DataWebService.this);
                     listener.onQueryHeroesOk(result);
                 } else {
                     cacheManager.listHeroes(listener);
@@ -60,5 +60,10 @@ public class DataWebService extends DataStrategy {
         if (mCall != null && !mCall.isCanceled() && !mCall.isExecuted()) {
             mCall.cancel();
         }
+    }
+
+    @Override
+    public void onOperationFinish() {
+
     }
 }

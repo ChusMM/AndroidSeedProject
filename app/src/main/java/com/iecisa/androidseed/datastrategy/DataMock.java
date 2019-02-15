@@ -37,27 +37,18 @@ public class DataMock extends DataStrategy implements FileHandler.ReadListener {
         this.listener = listener;
         final FileHandler fileHandler = new FileHandler(this);
 
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                Message message;
-                try {
-                    message = readFileFromAssets(HEROES_MOCK_FILE);
-                    fileHandler.sendMessage(message);
-                } catch (Exception e) {
-                    Log.e(TAG, e.toString());
-                    message = buildFailedMsg(e);
-                    fileHandler.sendMessage(message);
-                }
+        executor.execute(() -> {
+            Message message;
+            try {
+                message = readFileFromAssets(HEROES_MOCK_FILE);
+                fileHandler.sendMessage(message);
+            } catch (Exception e) {
+                Log.e(TAG, e.toString());
+                message = buildFailedMsg(e);
+                fileHandler.sendMessage(message);
             }
         });
     }
-
-    @Override
-    protected void deleteAllHeroes() { }
-
-    @Override
-    protected void saveHeroes(List<SuperHero> superHeroes) { }
 
     @SuppressWarnings("SameParameterValue")
     @WorkerThread

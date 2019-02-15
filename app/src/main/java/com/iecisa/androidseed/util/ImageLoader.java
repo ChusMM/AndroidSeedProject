@@ -1,6 +1,5 @@
 package com.iecisa.androidseed.util;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -22,12 +21,6 @@ import com.squareup.picasso.RequestCreator;
 public class ImageLoader {
     private static final String TAG = ImageLoader.class.getSimpleName();
 
-    private final Activity mActivity;
-
-    public ImageLoader(Activity activity) {
-        mActivity = activity;
-    }
-
     public void loadFromUrl(final String uri, final ImageView target) {
         this.getOfflineInstance(uri)
                 .into(target, new Callback() {
@@ -35,7 +28,7 @@ public class ImageLoader {
                     public void onSuccess() { }
 
                     @Override
-                    public void onError() {
+                    public void onError(Exception e) {
                         //Try again online if cache failed
                         ImageLoader.this.getStandardInstance(uri).into(target);
                     }
@@ -47,7 +40,7 @@ public class ImageLoader {
     }
 
     private RequestCreator getStandardInstance(final String uri, @DrawableRes final int placeHolder) {
-        return Picasso.with(mActivity)
+        return Picasso.get()
                 .load(uri)
                 .placeholder(placeHolder)
                 .error(placeHolder);
@@ -80,11 +73,10 @@ public class ImageLoader {
                 .resize(widthPx, resizedHeight)
                 .into(target, new Callback() {
                     @Override
-                    public void onSuccess() {
-                    }
+                    public void onSuccess() { }
 
                     @Override
-                    public void onError() {
+                    public void onError(Exception e) {
                         ImageLoader.this.getStandardInstance(uri, placeHolder)
                                 .resize(widthPx, resizedHeight)
                                 .into(target);
@@ -116,8 +108,8 @@ public class ImageLoader {
         paint.setColor(color);
 
         // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
-        canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
-                bitmap.getWidth() / 2, paint);
+        canvas.drawCircle((float) bitmap.getWidth() / 2, (float) bitmap.getHeight() / 2,
+                (float) bitmap.getWidth() / 2, paint);
 
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, rect, rect, paint);

@@ -40,27 +40,7 @@ public abstract class DataStrategy {
 
     public abstract void queryHeroes(@NonNull HeroesListener listener);
 
-    protected void deleteAllHeroes() {
-        this.cacheManager.deleteAllHeroes();
-    }
-
-    protected void saveHeroes(List<SuperHero> superHeroes) {
-        this.deleteAllHeroes();
-        this.cacheManager.saveHeroes(superHeroes);
-    }
-
-    public static DataStrategy newInstance(DataSource dataSource,
-                                           MarvelApi marvelApi,
-                                           CacheManager cacheManager,
-                                           DataFactory dataFactory,
-                                           Context context) {
-        switch (dataSource) {
-            case DATA_WS:
-                return new DataWebService(marvelApi, cacheManager, dataFactory, context);
-            case DATA_MOCK:
-                return new DataMock(dataFactory, context);
-            default:
-                return new DataWebService(marvelApi, cacheManager, dataFactory, context);
-        }
+    protected void saveHeroes(List<SuperHero> superHeroes, CacheManager.CacheListener listener) {
+        this.cacheManager.replaceHeroes(superHeroes, listener);
     }
 }
