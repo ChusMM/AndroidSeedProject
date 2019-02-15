@@ -7,6 +7,8 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import androidx.annotation.DrawableRes;
+
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,20 +19,27 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
+import com.squareup.picasso.Target;
 
 public class ImageLoader {
     private static final String TAG = ImageLoader.class.getSimpleName();
 
     public void loadFromUrl(final String uri, final ImageView target) {
         this.getOfflineInstance(uri)
-                .into(target, new Callback() {
+                .into(new Target() {
                     @Override
-                    public void onSuccess() { }
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        target.setImageBitmap(bitmap);
+                    }
 
                     @Override
-                    public void onError(Exception e) {
-                        //Try again online if cache failed
-                        ImageLoader.this.getStandardInstance(uri).into(target);
+                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                        target.setImageDrawable(errorDrawable);
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+                        target.setImageDrawable(placeHolderDrawable);
                     }
                 });
     }

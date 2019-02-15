@@ -1,6 +1,7 @@
 package com.iecisa.androidseed.view.activities;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import com.iecisa.androidseed.domain.SuperHero;
 import com.iecisa.androidseed.domain.usecases.FetchHeroesUseCase;
@@ -42,6 +43,10 @@ public class HeroDetailActivity extends BaseActivity implements HeroDetailViewMv
         mViewMvc = mViewMvcFactory.newInstance(HeroDetailViewMvc.class, null);
         setContentView(mViewMvc.getRootView());
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         mHeroBound = getIntent().getParcelableExtra(HERO_EXTRA);
     }
 
@@ -53,6 +58,16 @@ public class HeroDetailActivity extends BaseActivity implements HeroDetailViewMv
     public void onResume() {
         super.onResume();
         mViewMvc.bindHeroDetail(mHeroBound);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

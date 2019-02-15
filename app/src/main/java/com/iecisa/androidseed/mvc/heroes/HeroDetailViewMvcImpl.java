@@ -43,12 +43,7 @@ public class HeroDetailViewMvcImpl extends BaseViewMvc<HeroDetailViewMvc.Listene
 
         for (final HeroDetailViewMvc.Listener listener : getListeners()) {
             if (listener == this) {
-                heroPic.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        listener.onPictureClicked();
-                    }
-                });
+                heroPic.setOnClickListener(view -> listener.onPictureClicked());
                 break;
             }
         }
@@ -56,7 +51,7 @@ public class HeroDetailViewMvcImpl extends BaseViewMvc<HeroDetailViewMvc.Listene
 
     @Override
     public void bindHeroDetail(SuperHero hero) {
-        mImageLoader.loadFromUrlBy43AspectRatio(hero.getPhoto(), heroPic, R.drawable.placeholder);
+        mImageLoader.loadFromUrl(hero.getPhoto(), heroPic);
 
         List<HeroAttribute> specList = new ArrayList<>();
 
