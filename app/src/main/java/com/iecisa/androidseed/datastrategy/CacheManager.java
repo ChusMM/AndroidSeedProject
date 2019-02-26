@@ -1,65 +1,57 @@
 package com.iecisa.androidseed.datastrategy;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.WorkerThread;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 import com.iecisa.androidseed.domain.SuperHero;
 import com.iecisa.androidseed.persistence.SuperHeroDao;
 
+import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Set;
+
 public class CacheManager {
     private final SuperHeroDao superHeroDao;
     private final Context context;
-    private final ExecutorService executorService;
-    private final Handler uiHandler;
+    private final Set<Disposable> disposables = new HashSet<>();
 
     public interface CacheListener {
-        void onOperationFinish();
+        void onOperationFinish(int rowsAffected);
     }
 
     public CacheManager(SuperHeroDao superHeroDao, Context context) {
         this.superHeroDao = superHeroDao;
         this.context = context;
-        this.executorService = Executors.newSingleThreadExecutor();
-        this.uiHandler = new Handler(Looper.getMainLooper());
     }
 
     public void listHeroes(@NonNull DataStrategy.HeroesListener listener) {
-        executorService.execute(() -> {
-            List<SuperHero> superHeroes = superHeroDao.getAll();
-            onHeroesListFinished(listener, superHeroes);
-        });
-    }
-
-    @WorkerThread
-    private List<SuperHero> listHeroes() {
-        return superHeroDao.getAll();
+        Disposable disposable = superHeroDao.getAll()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(listener::onQueryHeroesOk);
+        disposables.add(disposable);
     }
 
     public void deleteAllHeroes(CacheListener listener) {
-        executorService.execute(() -> {
-            for (SuperHero superHero : listHeroes()) {
-                superHeroDao.delete(superHero);
-                uiHandler.post(listener::onOperationFinish);
-            }
-        });
+        Disposable disposable = superHeroDao.deleteAll()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(listener::onOperationFinish);
+        disposables.add(disposable);
     }
 
     public void replaceHeroes(List<SuperHero> superHeroes, CacheListener listener) {
-        executorService.execute(() -> {
-            superHeroDao.insertAll(superHeroes);
-            uiHandler.post(listener::onOperationFinish);
-        });
-    }
+        Disposable disposable = superHeroDao.insertAll(superHeroes)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> {
+                    listener.onOperationFinish(0);
+                });
 
-    private void onHeroesListFinished(DataStrategy.HeroesListener listener,
-                                      List<SuperHero> superHeroes) {
-        this.uiHandler.post(() -> listener.onQueryHeroesOk(superHeroes));
+        disposables.add(disposable);
     }
 }
