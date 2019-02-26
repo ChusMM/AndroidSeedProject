@@ -7,8 +7,14 @@ import com.iecisa.androidseed.datastrategy.DataStrategy;
 import com.iecisa.androidseed.domain.SuperHero;
 import com.iecisa.androidseed.injection.BaseUseCase;
 
-import java.util.Collections;
 import java.util.List;
+
+import io.reactivex.Flowable;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Jesús Manuel Muñoz Mazuecos
@@ -24,7 +30,8 @@ public class FetchHeroesUseCase extends BaseUseCase<FetchHeroesUseCase.Listener>
         void onFetchHeroesFailed(String msg);
     }
 
-    private DataStrategy dataStrategy;
+    private final DataStrategy dataStrategy;
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public FetchHeroesUseCase(DataStrategy dataStrategy,
                               Context context) {
@@ -48,10 +55,12 @@ public class FetchHeroesUseCase extends BaseUseCase<FetchHeroesUseCase.Listener>
     }
 
     protected void notifySucceeded(List<SuperHero> superHeroes) {
-        List<SuperHero> unmodifiableQuestions = Collections.unmodifiableList(superHeroes);
-        for (FetchHeroesUseCase.Listener listener : getListeners()) {
-            listener.onFetchHeroesOk(unmodifiableQuestions);
-        }
+        Disposable disposable = Observable.fromIterable(getListeners())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(listener -> listener.onFetchHeroesOk(superHeroes));
+
+        compositeDisposable.add(disposable);
     }
 
     protected void notifyFailed() {
@@ -62,8 +71,11 @@ public class FetchHeroesUseCase extends BaseUseCase<FetchHeroesUseCase.Listener>
             reason = "Connection Failed";
         }
 
-        for (FetchHeroesUseCase.Listener listener : getListeners()) {
-            listener.onFetchHeroesFailed(reason);
-        }
+        Disposable disposable = Flowable.fromIterable(getListeners())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(listener -> listener.onFetchHeroesFailed(reason));
+
+        compositeDisposable.add(disposable);
     }
 }
