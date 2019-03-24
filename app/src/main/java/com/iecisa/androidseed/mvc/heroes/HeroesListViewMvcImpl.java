@@ -46,7 +46,7 @@ public class HeroesListViewMvcImpl extends BaseViewMvc<HeroesListViewMvc.Listene
     }
 
     @Override
-    public void onViewRefresh() {
+    public void onViewStartRefreshing() {
         recyclerHeroes.setVisibility(View.GONE);
         swipeRefreshLayout.setRefreshing(true);
     }

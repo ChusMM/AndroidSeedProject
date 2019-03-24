@@ -68,7 +68,7 @@ public class HeroesListActivity extends BaseActivity implements HeroesListViewMv
 
     @Override
     public void onRefresh() {
-        mViewMvc.onViewRefresh();
+        mViewMvc.onViewStartRefreshing();
         mFetchHeroesUseCase.fetchAndNotify();
     }
 
