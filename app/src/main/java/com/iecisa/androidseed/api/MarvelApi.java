@@ -1,9 +1,9 @@
 package com.iecisa.androidseed.api;
 
-import retrofit2.Call;
+import io.reactivex.Observable;
 import retrofit2.http.GET;
 
 public interface MarvelApi {
-    @GET("/bins/bvyob")
-    Call<HeroListWrapper> getHeroes();
+    @GET("bins/bvyob")
+    Observable<HeroListWrapper> getHeroes();
 }
